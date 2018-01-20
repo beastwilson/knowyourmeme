@@ -53,12 +53,11 @@ function childrenToText(children) {
 
     for (const child of children) {
         if (child.type === 'text') {
-            text += child.data;
-            continue;
-        }
+            if (!/^\s*\[\d+]\s*$/.test(child.data))
+            {
+                text += child.data;
+            }
 
-        if (child.type === 'a' && child.children[0] && /^\[\d+]$/.test(child.children[0].text))
-        {
             continue;
         }
 
