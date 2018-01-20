@@ -11,6 +11,7 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
+const request = require('request');
 
 const APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
 
@@ -24,7 +25,8 @@ const languageStrings = {
             STOP_MESSAGE: 'Goodbye!',
         },
     }
-}
+};
+
 const handlers = {
     'LaunchRequest': function () {
         const speechOutput = this.t('HELP_MESSAGE');
@@ -32,8 +34,26 @@ const handlers = {
         this.emit(':ask', speechOutput, reprompt);
     },
     'meme': function () {
-        var meme = this.event.request.intent.slots.meme_string.value;
-        this.emit(':tell', this.event.request.intent.slots.meme_string.value);
+        const tell = (text) => {
+            this.emit(':tell', text);
+        };
+
+        const meme = this.event.request.intent.slots.meme_string.value;
+
+        request({ uri: `http://35.22.80.175/api/knowyourmeme/${meme}`, json: true }, (err, res, body)=>{
+            const errMsg = 'Sorry, but I wasn\'t able to get information on that meme. Please try again later.';
+            if (err != null) {
+                tell(errMsg);
+                return;
+            }
+
+            if (res.statusCode.toString()[0] !== '2') {
+                tell(errMsg);
+                return;
+            }
+
+            tell(body.text);
+        });
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
