@@ -11,7 +11,7 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
-const request = require('request');
+const nodeyourmeme = require('nodeyourmeme');
 
 const APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
 
@@ -23,6 +23,7 @@ const languageStrings = {
             HELP_MESSAGE: 'Say, what is, and then a meme name to get information about a meme',
             HELP_REPROMPT: ' What else can I help you with?',
             STOP_MESSAGE: 'Goodbye!',
+            FAILED_MESSAGE: 'Sorry, but I couldn\'t find any information on that meme.'
         },
     }
 };
@@ -41,21 +42,27 @@ const handlers = {
 
         const meme = this.event.request.intent.slots.meme_string.value;
 
-        request({ uri: `http://hack.frozor.io/api/knowyourmeme/alexa/${meme}`, json: true }, (err, res, body)=>{
-            const errMsg = 'Sorry, but I wasn\'t able to get information on that meme. Please try again later.';
-            if (err != null || res.statusCode.toString()[0] !== '2') {
-                if (body.hasOwnProperty('errorType') && body.errorType === 'no_results') {
-                    tell('Sorry, but I couldn\'t find any information on that meme.');
-                    return;
-                }
+        nodeyourmeme.search(meme)
+            .then(about => {
+                tell(about);
+            })
+            .catch(e => {
+                tell(this.t('FAILED_MESSAGE'))
+            });
+    },
+    'random': function () {
+        const tell = (text) => {
 
-                tell(errMsg);
-                return;
-            }
+            this.emit(':ask', text + this.t('HELP_REPROMPT'));
+        };
 
-            tell(body.text);
-        });
-
+        nodeyourmeme.random()
+            .then(about => {
+                tell(about);
+            })
+            .catch(e => {
+                tell(this.t('FAILED_MESSAGE'))
+            });
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');

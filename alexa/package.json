@@ -4,6 +4,6 @@
   "private": true,
   "dependencies": {
     "alexa-sdk": "^1.0.10",
-    "request": "^2.83.0"
+    "nodeyourmeme": "^1.0.0"
   }
 }
