@@ -40,7 +40,7 @@ const handlers = {
 
         const meme = this.event.request.intent.slots.meme_string.value;
 
-        request({ uri: `http://35.22.80.175/api/knowyourmeme/${meme}`, json: true }, (err, res, body)=>{
+        request({ uri: `http://35.22.80.175/api/knowyourmeme/alexa/${meme}`, json: true }, (err, res, body)=>{
             const errMsg = 'Sorry, but I wasn\'t able to get information on that meme. Please try again later.';
             if (err != null) {
                 tell(errMsg);
