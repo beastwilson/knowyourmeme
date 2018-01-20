@@ -57,6 +57,11 @@ function childrenToText(children) {
             continue;
         }
 
+        if (child.type === 'a' && child.children[0] && /^\[\d+]$/.test(child.children[0].text))
+        {
+            continue;
+        }
+
         text += childrenToText(child.children);
     }
 
