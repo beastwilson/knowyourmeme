@@ -40,6 +40,10 @@ async function findFirstSearchResult(term) {
         throw e;
     }
 
+    if (body.contains('Sorry, but there were no results for')) {
+        throw new Error('No results found.');
+    }
+
     const $ = cheerio.load(body);
 
     const grid = $('.entry-grid-body');
@@ -67,6 +71,33 @@ function childrenToText(children) {
     return text;
 }
 
+function parseMemeBody(body) {
+    const $ = cheerio.load(body);
+
+    const about = $('.bodycopy');
+
+    const children = about.children();
+
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+
+        if (child.attribs.id === 'about') {
+            return childrenToText(children[i + 1].children);
+        }
+    }
+
+    const paragraphs = about.find('p');
+
+    if (paragraphs && paragraphs[0]) {
+        const text = childrenToText(paragraphs[0]);
+        if (text && text.trim() !== '') {
+            return text;
+        }
+    }
+
+    return null;
+}
+
 /**
  * Search for a given term.
  * @param term {string} - The search term for which to search on.
@@ -87,25 +118,18 @@ async function doSearch(term) {
         throw e;
     }
 
-    if (body.contains('Sorry, but there were no results for')) {
-        throw new Error('No results found.');
-    }
-
-    const $ = cheerio.load(body);
-
-    const about = $('.bodycopy');
-
-    const children = about.children();
-
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-
-        if (child.attribs.id === 'about') {
-            return childrenToText(children[i + 1].children);
-        }
-    }
-
-    return null;
+    return parseMemeBody(body);
 }
 
-module.exports = { search: doSearch };
+async function doRandomSearch() {
+    let body;
+    try {
+        body = await makeRequest(config.BASE_URL + config.RANDOM_URL);
+    } catch (e) {
+        throw e;
+    }
+
+    return parseMemeBody(body);
+}
+
+module.exports = { search: doSearch, random: doRandomSearch };

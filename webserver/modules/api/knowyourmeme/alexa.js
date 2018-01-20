@@ -24,7 +24,21 @@ class AlexaModule extends Module {
                         errorType = 'no_results';
                     }
 
-                    res.status(500).json({error: e.toString(), errorText: errorType });
+                    res.status(500).json({error: e.toString(), errorType });
+                });
+        });
+
+        app.get('/alexa/random', (req, res) => {
+            knowyourmeme.random()
+                .then((about) => {
+                    if (!about) {
+                        throw new Error('Invalid response');
+                    }
+
+                    res.status(200).json({text: about});
+                })
+                .catch((e) => {
+                    res.status(500).json({error: e.toString()});
                 });
         });
     }
