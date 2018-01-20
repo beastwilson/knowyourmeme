@@ -104,4 +104,4 @@ async function doSearch(term) {
     return null;
 }
 
-doSearch('ugandan knuckles').then(console.log).catch(console.error);
+module.exports = doSearch;
