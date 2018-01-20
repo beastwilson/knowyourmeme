@@ -89,9 +89,19 @@ async function doSearch(term) {
 
     const $ = cheerio.load(body);
 
-    const about = $('.bodycopy').find('p')[0];
+    const about = $('.bodycopy');
 
-    return childrenToText(about.children);
+    const children = about.children();
+
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+
+        if (child.attribs.id === 'about') {
+            return childrenToText(children[i + 1].children);
+        }
+    }
+
+    return null;
 }
 
-module.exports = doSearch;
+doSearch('ugandan knuckles').then(console.log).catch(console.error);

@@ -12,6 +12,10 @@ class AlexaModule extends Module {
 
             search(meme)
                 .then((about) => {
+                    if (!about) {
+                        throw new Error('Invalid response');
+                    }
+
                     res.status(200).json({text: about});
                 })
                 .catch((e) => {
