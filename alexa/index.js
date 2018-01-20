@@ -16,12 +16,12 @@ const request = require('request');
 const APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
 
 const languageStrings = {
-    'en': {
+    'en-US': {
         translation: {
             SKILL_NAME: 'Know Your Meme',
             GET_FACT_MESSAGE: "Here's your fact: ",
-            HELP_MESSAGE: 'You can say know your meme then a meme name to get info about the meme',
-            HELP_REPROMPT: 'What can I help you with?',
+            HELP_MESSAGE: 'Say, what is, and then a meme name to get information about a meme',
+            HELP_REPROMPT: ' What else can I help you with?',
             STOP_MESSAGE: 'Goodbye!',
         },
     }
@@ -35,7 +35,8 @@ const handlers = {
     },
     'meme': function () {
         const tell = (text) => {
-            this.emit(':tell', text);
+		
+            this.emit(':ask', text + this.t('HELP_REPROMPT'));
         };
 
         const meme = this.event.request.intent.slots.meme_string.value;
@@ -54,6 +55,7 @@ const handlers = {
 
             tell(body.text);
         });
+
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
