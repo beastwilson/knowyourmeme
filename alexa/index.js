@@ -20,7 +20,7 @@ const languageStrings = {
         translation: {
             SKILL_NAME: 'Know Your Meme',
             GET_FACT_MESSAGE: "Here's your fact: ",
-            HELP_MESSAGE: 'Say, what is, and then a meme name to get information about a meme',
+            HELP_MESSAGE: 'Say, what is, and then a meme name to get information about a meme, or you can ask for a random meme',
             HELP_REPROMPT: ' What else can I help you with?',
             STOP_MESSAGE: 'Goodbye!',
             FAILED_MESSAGE: 'Sorry, but I couldn\'t find any information on that meme.'
@@ -37,7 +37,7 @@ const handlers = {
     'meme': function () {
         const tell = (text) => {
 		
-            this.emit(':ask', text + this.t('HELP_REPROMPT'));
+            this.emit(':ask', text + this.t('HELP_REPROMPT'),this.t('HELP_REPROMPT'));
         };
 
         const meme = this.event.request.intent.slots.meme_string.value;
@@ -53,7 +53,7 @@ const handlers = {
     'random': function () {
         const tell = (text) => {
 
-            this.emit(':ask', text + this.t('HELP_REPROMPT'));
+            this.emit(':ask', text + this.t('HELP_REPROMPT'),this.t('HELP_REPROMPT'));
         };
 
         nodeyourmeme.random()
