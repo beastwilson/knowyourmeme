@@ -87,6 +87,10 @@ async function doSearch(term) {
         throw e;
     }
 
+    if (body.contains('Sorry, but there were no results for')) {
+        throw new Error('No results found.');
+    }
+
     const $ = cheerio.load(body);
 
     const about = $('.bodycopy');
@@ -104,4 +108,4 @@ async function doSearch(term) {
     return null;
 }
 
-module.exports = doSearch;
+module.exports = { search: doSearch };

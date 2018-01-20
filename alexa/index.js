@@ -43,12 +43,12 @@ const handlers = {
 
         request({ uri: `http://hack.frozor.io/api/knowyourmeme/alexa/${meme}`, json: true }, (err, res, body)=>{
             const errMsg = 'Sorry, but I wasn\'t able to get information on that meme. Please try again later.';
-            if (err != null) {
-                tell(errMsg);
-                return;
-            }
+            if (err != null || res.statusCode.toString()[0] !== '2') {
+                if (body.hasOwnProperty('errorType') && body.errorType === 'no_results') {
+                    tell('Sorry, but I couldn\'t find any information on that meme.');
+                    return;
+                }
 
-            if (res.statusCode.toString()[0] !== '2') {
                 tell(errMsg);
                 return;
             }
