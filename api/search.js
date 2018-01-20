@@ -63,6 +63,11 @@ function childrenToText(children) {
     return text;
 }
 
+/**
+ * Search for a given term.
+ * @param term {string} - The search term for which to search on.
+ * @returns {Promise.<void>}
+ */
 async function doSearch(term) {
     let resultUrl;
     try {
